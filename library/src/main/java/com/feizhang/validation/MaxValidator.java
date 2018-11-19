@@ -5,7 +5,7 @@ import com.feizhang.validation.annotations.Max;
 /**
  * Validator on number object.
  */
-class MaxValidator<V> extends ConstraintValidator<Max> {
+class MaxValidator extends ConstraintValidator<Max> {
 
     MaxValidator(Max annotation, String fieldName) {
         super(annotation, fieldName);
