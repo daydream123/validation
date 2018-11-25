@@ -20,8 +20,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 People people = new People();
-                people.array = new Child[]{new Child("hell", 18)};
-                people.children.add(new Child("hhee", 10));
                 boolean valid = Validator.validate(v.getContext(), people);
                 if (valid){
                     // do something like: start new Activity, new Service or call some api

@@ -10,12 +10,21 @@ import com.feizhang.validation.annotations.Min;
 import com.feizhang.validation.annotations.NotBlank;
 import com.feizhang.validation.annotations.NotEmpty;
 import com.feizhang.validation.annotations.NotNull;
-import com.feizhang.validation.annotations.Range;
+import com.feizhang.validation.annotations.Size;
+import com.feizhang.validation.validator.ConstraintValidator;
+import com.feizhang.validation.validator.LenValidator;
+import com.feizhang.validation.validator.MaxValidator;
+import com.feizhang.validation.validator.MinValidator;
+import com.feizhang.validation.validator.NotBlankValidator;
+import com.feizhang.validation.validator.NotEmptyValidator;
+import com.feizhang.validation.validator.NotNullValidator;
+import com.feizhang.validation.validator.SizeValidator;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A validator to validate fields of Object with Annotations(@Max, @Min, @NotEmpty, @NotNull, @Rang, etc.),
@@ -42,6 +51,29 @@ public class Validator {
             List list = (List) object;
             for (Object item : list) {
                 boolean valid = validate(context, item);
+                if (!valid) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        // check keySet and values in map
+        if (object instanceof Map){
+            Map map = (Map) object;
+
+            // validate keys
+            for (Object next : map.keySet()) {
+                boolean valid = validateObject(context, next);
+                if (!valid) {
+                    return false;
+                }
+            }
+
+            // validate values
+            for (Object next : map.values()){
+                boolean valid = validateObject(context, next);
                 if (!valid) {
                     return false;
                 }
@@ -89,16 +121,25 @@ public class Validator {
                 }
 
                 // validate fields of object, but make sure it's not String or Number
-                if (!(value instanceof String) && !(value instanceof Number)) {
-                    boolean valid = validate(context, value);
-                    if (!valid) {
-                        return false;
-                    }
+                boolean valid = validateObject(context, value);
+                if (!valid) {
+                    return false;
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
                 return false;
             }
+        }
+
+        return true;
+    }
+
+    /**
+     * Before validation make sure it's not String or Number
+     */
+    private static boolean validateObject(Context context, Object object){
+        if (object != null && !(object instanceof String) && !(object instanceof Number)) {
+            return validate(context, object);
         }
 
         return true;
@@ -113,7 +154,10 @@ public class Validator {
      * @return return true when the object passes validation
      * or the annotation we don't support
      */
-    private static <A extends Annotation> boolean validateWithAnnotation(Context context, A annotation, Object object, String fieldName) {
+    private static <A extends Annotation> boolean validateWithAnnotation(Context context,
+                                                                         A annotation,
+                                                                         Object object,
+                                                                         String fieldName) {
         ConstraintValidator validator = null;
         if (annotation instanceof NotNull) {
             validator = new NotNullValidator((NotNull) annotation, fieldName);
@@ -123,8 +167,8 @@ public class Validator {
             validator = new MinValidator((Min) annotation, fieldName);
         } else if (annotation instanceof Max) {
             validator = new MaxValidator((Max) annotation, fieldName);
-        } else if (annotation instanceof Range) {
-            validator = new RangeValidator((Range) annotation, fieldName);
+        } else if (annotation instanceof Size) {
+            validator = new SizeValidator((Size) annotation, fieldName);
         } else if (annotation instanceof Len){
             validator = new LenValidator((Len) annotation, fieldName);
         } else if (annotation instanceof NotBlank){
@@ -134,8 +178,8 @@ public class Validator {
         if (validator != null) {
             boolean valid = validator.isValid(object);
             if (!valid) {
-                Log.e(TAG, validator.getMessage());
-                Toast.makeText(context, validator.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e(TAG, validator.getMessage(object));
+                Toast.makeText(context, validator.getMessage(object), Toast.LENGTH_SHORT).show();
                 return false;
             }
         }

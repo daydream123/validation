@@ -2,18 +2,13 @@ package com.feizhang.validation.sample;
 
 import com.feizhang.validation.annotations.Len;
 import com.feizhang.validation.annotations.Min;
-import com.feizhang.validation.annotations.NotBlank;
-import com.feizhang.validation.annotations.NotNull;
-import com.feizhang.validation.annotations.Range;
+import com.feizhang.validation.annotations.Size;
 
 public class Child {
-    @NotNull
-    @Len(len = 4)
-    @NotBlank
+    @Len(min = 4, max = 20)
     String name;
 
-    @Min(min = 10)
-    @Range(min = 1, max = 20)
+    @Size(min = 1, max = 20)
     int age;
 
     @Min(min = 170)

@@ -1,18 +1,23 @@
-package com.feizhang.validation;
+package com.feizhang.validation.validator;
 
 import com.feizhang.validation.annotations.NotNull;
 
 /**
  * Validator on not primary object.
  */
-class NotNullValidator extends ConstraintValidator<NotNull> {
+public class NotNullValidator extends ConstraintValidator<NotNull> {
 
-    NotNullValidator(NotNull annotation, String fieldName) {
+    public NotNullValidator(NotNull annotation, String fieldName) {
         super(annotation, fieldName);
     }
 
     @Override
-    public String getMessage() {
+    public boolean isValid(Object value) {
+        return value != null;
+    }
+
+    @Override
+    public String getMessage(Object object) {
         String message = annotation.message();
         if (message.contains("%")) {
             return String.format(annotation.message(), fieldName);
@@ -21,8 +26,4 @@ class NotNullValidator extends ConstraintValidator<NotNull> {
         }
     }
 
-    @Override
-    public boolean isValid(Object value) {
-        return value != null;
-    }
 }

@@ -8,7 +8,11 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Len {
-    int len();
+    int min();
 
-    String message() default "%s长度不等于%d";
+    int max();
+
+    String nullMessage() default "%s不能为null";
+
+    String lenMessage() default "%s长度不在范围%d和%d之间";
 }

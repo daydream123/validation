@@ -1,17 +1,17 @@
-package com.feizhang.validation;
+package com.feizhang.validation.validator;
 
 import java.lang.annotation.Annotation;
 
 public abstract class ConstraintValidator<A extends Annotation> {
     protected A annotation;
-    protected String fieldName;
-
-    public abstract boolean isValid(Object value);
+    String fieldName;
 
     ConstraintValidator(A annotation, String fieldName){
         this.annotation = annotation;
         this.fieldName = fieldName;
     }
 
-    public abstract String getMessage();
+    public abstract boolean isValid(Object value);
+
+    public abstract String getMessage(Object value);
 }
