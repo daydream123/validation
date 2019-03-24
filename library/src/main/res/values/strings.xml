@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">library</string>
+    <string name="empty_warning">%1$s不能为空</string>
 </resources>

@@ -1,9 +1,14 @@
 package com.feizhang.validation;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.feizhang.validation.annotations.Len;
 import com.feizhang.validation.annotations.Max;
 import com.feizhang.validation.annotations.Min;
@@ -34,19 +39,93 @@ public class Validator {
     private static final String TAG = "Validator";
 
     /**
-     * Validate fields under object.
+     * Check if empty field
      */
-    public static boolean validate(Context context, Object object) {
+    public static boolean isEmpty(@NonNull Context context, @NonNull String value, @NonNull String fieldName){
+        if (TextUtils.isEmpty(value)){
+            Toast.makeText(context, context.getString(R.string.empty_warning, fieldName), Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * startActivity and validate the intent params.
+     */
+    public static void startActivity(@NonNull Context context, @NonNull IntentParams params){
+        if(validate(context, params)){
+            if (params.getBundle() != null){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    context.startActivity(params.toIntent(context), params.getBundle());
+                } else {
+                    context.startActivity(params.toIntent(context));
+                }
+            } else {
+                context.startActivity(params.toIntent(context));
+            }
+        }
+    }
+
+    /**
+     * startService and validate the intent params.
+     */
+    public static void startService(@NonNull Context context, @NonNull IntentParams params){
+        if (validate(context, params)){
+            context.startService(params.toIntent(context));
+        }
+    }
+
+    /**
+     * startActivityForResult and validate the intent params.
+     */
+    public static void startActivityForResult(@NonNull Activity activity, @NonNull IntentParams params, int reqCode){
+        if (validate(activity, params)){
+            if (params.getBundle() != null){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    activity.startActivityForResult(params.toIntent(activity), reqCode, params.getBundle());
+                } else {
+                    activity.startActivityForResult(params.toIntent(activity), reqCode);
+                }
+            } else {
+                activity.startActivityForResult(params.toIntent(activity), reqCode);
+            }
+        }
+    }
+
+    /**
+     * startForegroundService and validate the intent params.
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void startForegroundService(Context context, IntentParams params){
+        if (validate(context, params)){
+            context.startForegroundService(params.toIntent(context));
+        }
+    }
+
+    /**
+     * ignore String, Number and Boolean
+     */
+    public static boolean validate(Context context, Object object){
+        if (object != null
+                && !(object instanceof String)
+                && !(object instanceof Number)
+                && !(object instanceof Boolean)) {
+            return doValidate(context, object);
+        }
+
+        return true;
+    }
+
+    /**
+     * validate fields under object.
+     */
+    private static boolean doValidate(Context context, Object object) {
         if (object == null) {
-            return false;
+            return true;
         }
 
-        // ignore String and Number
-        if (object instanceof String || object instanceof Number) {
-            throw new IllegalArgumentException("String or Number instance is not supported");
-        }
-
-        // check fields in java.util.List
+        // validate fields in java.util.List
         if (object instanceof List) {
             List list = (List) object;
             for (Object item : list) {
@@ -59,21 +138,13 @@ public class Validator {
             return true;
         }
 
-        // check keySet and values in map
+        // validate values in map
         if (object instanceof Map){
             Map map = (Map) object;
 
-            // validate keys
-            for (Object next : map.keySet()) {
-                boolean valid = validateObject(context, next);
-                if (!valid) {
-                    return false;
-                }
-            }
-
             // validate values
             for (Object next : map.values()){
-                boolean valid = validateObject(context, next);
+                boolean valid = doValidate(context, next);
                 if (!valid) {
                     return false;
                 }
@@ -82,7 +153,7 @@ public class Validator {
             return true;
         }
 
-        // check fields in array
+        // validate fields in array
         if (object.getClass().isArray()) {
             Object[] array = (Object[]) object;
             for (Object item : array) {
@@ -95,7 +166,7 @@ public class Validator {
             return true;
         }
 
-        // check fields of object
+        // validate fields of object
         Field[] fields = object.getClass().getDeclaredFields();
         for (Field field : fields) {
             // ignore static and final
@@ -121,7 +192,7 @@ public class Validator {
                 }
 
                 // validate fields of object, but make sure it's not String or Number
-                boolean valid = validateObject(context, value);
+                boolean valid = validate(context, value);
                 if (!valid) {
                     return false;
                 }
@@ -135,18 +206,7 @@ public class Validator {
     }
 
     /**
-     * Before validation make sure it's not String or Number
-     */
-    private static boolean validateObject(Context context, Object object){
-        if (object != null && !(object instanceof String) && !(object instanceof Number)) {
-            return validate(context, object);
-        }
-
-        return true;
-    }
-
-    /**
-     * Validate value with annotations that we support.
+     * validate value with annotations that we support.
      *
      * @param context    Android context
      * @param annotation annotation to validate with
