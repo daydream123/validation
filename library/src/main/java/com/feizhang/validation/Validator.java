@@ -104,6 +104,29 @@ public class Validator {
     }
 
     /**
+     * sendBroadcast and validate the intent params.
+     */
+    public void sendBroadcast(@NonNull Context context, @NonNull IntentParams params){
+        if (validate(context, params)){
+            context.sendBroadcast(params.toIntent(context));
+        }
+    }
+
+    /**
+     * sendBroadcast with receive permission and validate the intent params.
+     */
+    public void sendBroadcast(@NonNull Context context, @NonNull IntentParams params, @NonNull String permission){
+        if (validate(context, params)){
+            Intent intent = params.toIntent(context);
+            if (TextUtils.isEmpty(intent.getAction())){
+                throw new IllegalArgumentException("no action set for sending broadcast");
+            }
+
+            context.sendBroadcast(params.toIntent(context), permission);
+        }
+    }
+
+    /**
      * ignore String, Number and Boolean
      */
     public static boolean validate(Context context, Object object){

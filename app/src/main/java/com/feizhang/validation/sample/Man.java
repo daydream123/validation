@@ -28,7 +28,7 @@ class Man implements Serializable{
     @NotEmpty(message = "childrenList 为空")
     List<Child> childrenList = new ArrayList<>();
 
-    public static class Child implements Serializable {
+    static class Child implements Serializable {
         @Len(min = 4, max = 20)
         String name;
 
