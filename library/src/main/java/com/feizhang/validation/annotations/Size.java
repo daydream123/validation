@@ -8,9 +8,9 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Size {
-    int min();
+    long min();
 
-    int max();
+    long max();
 
     String message() default "%s不在范围%d和%d之间";
 }

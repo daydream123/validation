@@ -13,7 +13,7 @@ public class MinValidator extends ConstraintValidator<Min> {
 
     @Override
     public boolean isValid(Object value) {
-        int minValue = annotation.min();
+        long minValue = annotation.min();
 
         if (value instanceof Number) {
             return ((Number) value).intValue() >= minValue;

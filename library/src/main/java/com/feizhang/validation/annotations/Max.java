@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Max {
-    int max();
+    long max();
 
     String message() default "%s不能大于%d";
 }

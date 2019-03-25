@@ -13,8 +13,8 @@ public class SizeValidator extends ConstraintValidator<Size> {
 
     @Override
     public boolean isValid(Object value) {
-        int minValue = annotation.min();
-        int maxValue = annotation.max();
+        long minValue = annotation.min();
+        long maxValue = annotation.max();
 
         if (value instanceof Number) {
             int number = ((Number) value).intValue();

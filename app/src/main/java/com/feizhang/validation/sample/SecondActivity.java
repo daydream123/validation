@@ -1,36 +1,39 @@
 package com.feizhang.validation.sample;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.feizhang.validation.IntentParams;
 
 public class SecondActivity extends AppCompatActivity {
 
-    public static class SendActivityParams extends IntentParams {
-        People people = new People();
+    public static class Params extends IntentParams {
+        Man man = new Man();
 
-        public SendActivityParams() {
+        Params() {
             super(SecondActivity.class);
         }
 
         @NonNull
         @Override
         public String toString() {
-            return people.toString();
+            return man.toString();
         }
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
 
         Intent intent = getIntent();
-        SendActivityParams params = (SendActivityParams) intent.getSerializableExtra(SendActivityParams.EXTRA_INTENT_PARAMS);
-        Toast.makeText(this, "params info : " + params.toString(), Toast.LENGTH_SHORT).show();
+        Params params = (Params) intent.getSerializableExtra(Params.EXTRA_INTENT_PARAMS);
+        TextView textView = findViewById(R.id.paramInfoText);
+        textView.setText("params info : " + params.toString());
     }
 }

@@ -13,7 +13,7 @@ public class MaxValidator extends ConstraintValidator<Max> {
 
     @Override
     public boolean isValid(Object value) {
-        int maxValue = annotation.max();
+        long maxValue = annotation.max();
 
         if (value instanceof Number) {
             return ((Number) value).intValue() <= maxValue;
