@@ -1,5 +1,6 @@
 package com.feizhang.validation.sample;
 
+import com.feizhang.validation.IntentParams;
 import com.feizhang.validation.annotations.Len;
 import com.feizhang.validation.annotations.Max;
 import com.feizhang.validation.annotations.Min;
@@ -15,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class Man implements Serializable{
+class SecondActivityParams extends IntentParams implements Serializable{
     @NotBlank
     String name = "zhang";
 
@@ -27,6 +28,10 @@ class Man implements Serializable{
 
     @NotEmpty(message = "childrenList 为空")
     List<Child> childrenList = new ArrayList<>();
+
+    SecondActivityParams() {
+        super(SecondActivity.class);
+    }
 
     static class Child implements Serializable {
         @Len(min = 4, max = 20)

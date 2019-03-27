@@ -18,16 +18,24 @@ public class IntentParams implements Serializable {
     private String action;
     private Bundle bundle;
 
-    public IntentParams(Class<?> clazz){
+    protected IntentParams(@NonNull Class<?> clazz){
         this.clazz = clazz;
     }
 
-    public IntentParams(String action){
+    protected IntentParams(@NonNull String action){
         this.action = action;
     }
 
     public void setBundle(Bundle bundle){
         this.bundle = bundle;
+    }
+
+    public static IntentParams with(@NonNull Class<?> clazz){
+        return new IntentParams(clazz);
+    }
+
+    public static IntentParams with(@NonNull String action){
+        return new IntentParams(action);
     }
 
     private Intent toIntent(Context context){

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.feizhang.validation.Validator;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
@@ -19,19 +18,18 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SecondActivity.Params params = new SecondActivity.Params();
-                params.man = new Man();
-                params.man.name = "张三";
+                SecondActivityParams params = new SecondActivityParams();
+                params.name = "张三";
 
-                params.man.childrenArray = new Man.Child[] {new Man.Child("hello world", 10)};
-                params.man.childrenList.add(new Man.Child("hello world", 8));
+                params.childrenArray = new SecondActivityParams.Child[] {new SecondActivityParams.Child("hello world", 10)};
+                params.childrenList.add(new SecondActivityParams.Child("hello world", 8));
 
-                Man.Child child = new Man.Child("hello world", 8);
+                SecondActivityParams.Child child = new SecondActivityParams.Child("hello world", 8);
                 Calendar calendar = Calendar.getInstance();
                 calendar.add(Calendar.YEAR, -5);
 
-                child.setToys(new Man.Toy("toy1", 999F, calendar.getTimeInMillis()));
-                params.man.childrenMap.put(1, child);
+                child.setToys(new SecondActivityParams.Toy("toy1", 999F, calendar.getTimeInMillis()));
+                params.childrenMap.put(1, child);
                 params.startActivity(v.getContext(), params);
             }
         });
