@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
                 child.setToys(new Man.Toy("toy1", 999F, calendar.getTimeInMillis()));
                 params.man.childrenMap.put(1, child);
-                Validator.startActivity(v.getContext(), params);
+                params.startActivity(v.getContext(), params);
             }
         });
     }

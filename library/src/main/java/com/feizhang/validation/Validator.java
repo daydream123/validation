@@ -1,14 +1,11 @@
 package com.feizhang.validation;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
+
 import com.feizhang.validation.annotations.Len;
 import com.feizhang.validation.annotations.Max;
 import com.feizhang.validation.annotations.Min;
@@ -33,7 +30,7 @@ import java.util.Map;
 
 /**
  * A validator to validate fields of Object with Annotations(@Max, @Min, @NotEmpty, @NotNull, @Rang, etc.),
- * if someone field's value did't pass the validations, it'll toast a message specified by its annotation.
+ * if someone field's value did't pass the validations, it'll toast a message specified in its annotation.
  */
 public class Validator {
     private static final String TAG = "Validator";
@@ -48,82 +45,6 @@ public class Validator {
         }
 
         return false;
-    }
-
-    /**
-     * startActivity and validate the intent params.
-     */
-    public static void startActivity(@NonNull Context context, @NonNull IntentParams params){
-        if(validate(context, params)){
-            if (params.getBundle() != null){
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    context.startActivity(params.toIntent(context), params.getBundle());
-                } else {
-                    context.startActivity(params.toIntent(context));
-                }
-            } else {
-                context.startActivity(params.toIntent(context));
-            }
-        }
-    }
-
-    /**
-     * startService and validate the intent params.
-     */
-    public static void startService(@NonNull Context context, @NonNull IntentParams params){
-        if (validate(context, params)){
-            context.startService(params.toIntent(context));
-        }
-    }
-
-    /**
-     * startActivityForResult and validate the intent params.
-     */
-    public static void startActivityForResult(@NonNull Activity activity, @NonNull IntentParams params, int reqCode){
-        if (validate(activity, params)){
-            if (params.getBundle() != null){
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    activity.startActivityForResult(params.toIntent(activity), reqCode, params.getBundle());
-                } else {
-                    activity.startActivityForResult(params.toIntent(activity), reqCode);
-                }
-            } else {
-                activity.startActivityForResult(params.toIntent(activity), reqCode);
-            }
-        }
-    }
-
-    /**
-     * startForegroundService and validate the intent params.
-     */
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void startForegroundService(Context context, IntentParams params){
-        if (validate(context, params)){
-            context.startForegroundService(params.toIntent(context));
-        }
-    }
-
-    /**
-     * sendBroadcast and validate the intent params.
-     */
-    public void sendBroadcast(@NonNull Context context, @NonNull IntentParams params){
-        if (validate(context, params)){
-            context.sendBroadcast(params.toIntent(context));
-        }
-    }
-
-    /**
-     * sendBroadcast with receive permission and validate the intent params.
-     */
-    public void sendBroadcast(@NonNull Context context, @NonNull IntentParams params, @NonNull String permission){
-        if (validate(context, params)){
-            Intent intent = params.toIntent(context);
-            if (TextUtils.isEmpty(intent.getAction())){
-                throw new IllegalArgumentException("no action set for sending broadcast");
-            }
-
-            context.sendBroadcast(params.toIntent(context), permission);
-        }
     }
 
     /**
